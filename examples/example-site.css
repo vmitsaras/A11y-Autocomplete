@@ -57,8 +57,10 @@
 
 .example-field {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.35rem;
   min-width: min(100%, 18rem);
+  max-width: 100%;
 }
 
 .example-field label {
@@ -74,6 +76,11 @@
   color: var(--demo-ink);
   background: white;
   font: inherit;
+}
+
+.example-field select {
+  min-width: 0;
+  width: 100%;
 }
 
 .example-action {
