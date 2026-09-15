@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Theme gallery | A11y Autocomplete</title>
+    <meta name="description" content="Compare unstyled, dark, forced-color-ready, compact, and long-label autocomplete configurations." />
+    <link rel="stylesheet" href="../dist/styles.css" />
+    <link rel="stylesheet" href="../demo-site.css" />
+    <link rel="stylesheet" href="./example-site.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <header class="demo-header">
+      <div class="demo-page demo-header__inner">
+        <a class="demo-header__brand" href="../index.html"><span class="demo-header__mark" aria-hidden="true">Aa</span><span>A11y Autocomplete</span></a>
+        <nav class="demo-header__nav" aria-label="Example pages">
+          <ul class="demo-header__links">
+            <li><a href="./states.html">States</a></li>
+            <li><a href="./async-data/">Async data</a></li>
+            <li><a href="./match-highlighting.html">Highlighting</a></li>
+            <li><a href="./datalist.html">Datalist</a></li>
+            <li><a href="./form-validator-integration.html">Form validator</a></li>
+            <li><a href="./tag-input-integration.html">Tag input</a></li>
+            <li><a class="example-nav-current" aria-current="page" href="./themes.html">Themes</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="demo-page example-main" id="main-content">
+      <header class="example-intro">
+        <p class="demo-eyebrow">Styling boundary</p>
+        <h1>One behavior model, five visual contexts.</h1>
+        <p>The component’s semantics and interaction stay consistent. These examples show what the baseline stylesheet provides and which public custom properties consumers can adapt.</p>
+      </header>
+
+      <p class="example-note">The forced-colors example uses the package’s real <code>forced-colors</code> media query. Enable the operating-system mode to inspect it; automated evidence uses browser emulation rather than cosmetic imitation.</p>
+
+      <div class="theme-grid">
+        <section class="theme-card" aria-labelledby="unstyled-title">
+          <div>
+            <p class="demo-eyebrow">Stylesheet omitted</p>
+            <h2 id="unstyled-title">Minimal / no CSS</h2>
+            <p>This isolated document loads the JavaScript package but deliberately omits <code>dist/styles.css</code>.</p>
+          </div>
+          <iframe title="Unstyled autocomplete example" src="./theme-unstyled.html" data-theme-unstyled></iframe>
+        </section>
+
+        <section class="theme-card theme-dark" aria-labelledby="dark-title" data-theme-card="dark">
+          <div>
+            <p class="demo-eyebrow">Public custom properties</p>
+            <h2 id="dark-title">Dark</h2>
+            <p>A dark surface, light text, and yellow focus indicator configured without changing component behavior.</p>
+          </div>
+          <div class="theme-surface">
+            <div class="a11y-autocomplete" data-theme-demo>
+              <label class="a11y-autocomplete__label" for="theme-dark-input">City</label>
+              <div class="a11y-autocomplete__control"><input class="a11y-autocomplete__input" id="theme-dark-input" data-autocomplete-input /><button class="a11y-autocomplete__clear" type="button" hidden data-autocomplete-clear>Clear</button><div class="a11y-autocomplete__popup" hidden data-autocomplete-popup><ul class="a11y-autocomplete__list" data-autocomplete-list></ul></div></div>
+              <div class="a11y-autocomplete__status" data-autocomplete-status></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="theme-card theme-forced" aria-labelledby="forced-title" data-theme-card="forced">
+          <div>
+            <p class="demo-eyebrow">System color mode</p>
+            <h2 id="forced-title">Forced-colors-ready</h2>
+            <p>The dashed preview boundary is only a locator. In forced-colors mode, the component itself uses system colors and removes its shadow.</p>
+          </div>
+          <div class="theme-surface">
+            <div class="a11y-autocomplete" data-theme-demo>
+              <label class="a11y-autocomplete__label" for="theme-forced-input">City</label>
+              <div class="a11y-autocomplete__control"><input class="a11y-autocomplete__input" id="theme-forced-input" data-autocomplete-input /><button class="a11y-autocomplete__clear" type="button" hidden data-autocomplete-clear>Clear</button><div class="a11y-autocomplete__popup" hidden data-autocomplete-popup><ul class="a11y-autocomplete__list" data-autocomplete-list></ul></div></div>
+              <div class="a11y-autocomplete__status" data-autocomplete-status></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="theme-card theme-compact" aria-labelledby="compact-title" data-theme-card="compact">
+          <div>
+            <p class="demo-eyebrow">Reduced visual density</p>
+            <h2 id="compact-title">Compact</h2>
+            <p>Typography and padding tighten while the input, clear button, and options retain a 44px minimum target.</p>
+          </div>
+          <div class="theme-surface">
+            <div class="a11y-autocomplete" data-theme-demo>
+              <label class="a11y-autocomplete__label" for="theme-compact-input">City</label>
+              <div class="a11y-autocomplete__control"><input class="a11y-autocomplete__input" id="theme-compact-input" data-autocomplete-input /><button class="a11y-autocomplete__clear" type="button" hidden data-autocomplete-clear>Clear</button><div class="a11y-autocomplete__popup" hidden data-autocomplete-popup><ul class="a11y-autocomplete__list" data-autocomplete-list></ul></div></div>
+              <div class="a11y-autocomplete__status" data-autocomplete-status></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="theme-card theme-long" aria-labelledby="long-title" data-theme-card="long">
+          <div>
+            <p class="demo-eyebrow">Narrow container</p>
+            <h2 id="long-title">Long labels</h2>
+            <p>Long localized and descriptive labels wrap inside a narrow result list without creating horizontal page overflow.</p>
+          </div>
+          <div class="theme-surface">
+            <div class="a11y-autocomplete" data-theme-demo data-long-items>
+              <label class="a11y-autocomplete__label" for="theme-long-input">International destination with a descriptive name</label>
+              <div class="a11y-autocomplete__control"><input class="a11y-autocomplete__input" id="theme-long-input" data-autocomplete-input /><button class="a11y-autocomplete__clear" type="button" hidden data-autocomplete-clear>Clear</button><div class="a11y-autocomplete__popup" hidden data-autocomplete-popup><ul class="a11y-autocomplete__list" data-autocomplete-list></ul></div></div>
+              <div class="a11y-autocomplete__status" data-autocomplete-status></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="manual-checks">
+        <h2>Manual presentation checks</h2>
+        <ul>
+          <li>Verify focus and active-option indicators at 200% and 400% zoom.</li>
+          <li>Enable Windows forced colors and inspect focus, active, invalid, disabled, loading, and selected states.</li>
+          <li>Check consuming theme colors with a contrast tool; this gallery does not claim custom-theme contrast approval.</li>
+        </ul>
+      </div>
+
+      <p class="example-footer"><a href="../index.html">Return to the project overview</a></p>
+    </main>
+
+    <script type="module">
+      import { createAutocomplete } from "../dist/index.js";
+
+      const cities = ["Athens", "Berlin", "Lisbon", "Madrid", "Paris", "Vienna"];
+      const longLabels = [
+        "Bandaranaike International Airport — Colombo, Western Province, Sri Lanka",
+        "Adolfo Suárez Madrid–Barajas Airport — Community of Madrid, Spain",
+        "Paris Charles de Gaulle Airport — Roissy-en-France, Île-de-France"
+      ];
+      for (const root of document.querySelectorAll("[data-theme-demo]")) {
+        createAutocomplete(root, {
+          items: root.hasAttribute("data-long-items") ? longLabels : cities,
+          minLength: 0,
+          openOnFocus: true,
+          clearOnEscape: true
+        });
+      }
+    </script>
+  </body>
+</html>

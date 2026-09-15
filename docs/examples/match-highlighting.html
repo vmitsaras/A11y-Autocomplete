@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Match highlighting | A11y Autocomplete</title>
+    <meta name="description" content="Use renderOption to highlight literal matches while preserving complete option text." />
+    <link rel="stylesheet" href="../dist/styles.css" />
+    <link rel="stylesheet" href="../demo-site.css" />
+    <link rel="stylesheet" href="./example-site.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <header class="demo-header">
+      <div class="demo-page demo-header__inner">
+        <a class="demo-header__brand" href="../index.html"><span class="demo-header__mark" aria-hidden="true">Aa</span><span>A11y Autocomplete</span></a>
+        <nav class="demo-header__nav" aria-label="Example pages">
+          <ul class="demo-header__links">
+            <li><a href="./states.html">States</a></li>
+            <li><a href="./async-data/">Async data</a></li>
+            <li><a class="example-nav-current" aria-current="page" href="./match-highlighting.html">Highlighting</a></li>
+            <li><a href="./datalist.html">Datalist</a></li>
+            <li><a href="./form-validator-integration.html">Form validator</a></li>
+            <li><a href="./tag-input-integration.html">Tag input</a></li>
+            <li><a href="./themes.html">Themes</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="demo-page example-main" id="main-content">
+      <header class="example-intro">
+        <p class="demo-eyebrow">Presentational rendering</p>
+        <h1>Highlight the match. Keep the whole name.</h1>
+        <p>The existing <code>renderOption</code> hook can add visual emphasis without changing the option’s text, value, focus model, or keyboard behavior.</p>
+      </header>
+
+      <section class="example-panel highlight-demo" aria-labelledby="highlight-title">
+        <h2 id="highlight-title">Airport search</h2>
+        <p class="example-note">Try <strong>an</strong>, <strong>international</strong>, or <strong>ber</strong>. Highlighting is visual option content; it is not inline input completion.</p>
+        <div class="example-surface">
+          <div class="a11y-autocomplete" data-a11y-autocomplete data-highlight-demo>
+            <label class="a11y-autocomplete__label" for="airport">Airport or city</label>
+            <p class="a11y-autocomplete__hint" id="airport-hint">Type any literal part of a city or airport name.</p>
+            <div class="a11y-autocomplete__control">
+              <input class="a11y-autocomplete__input" id="airport" name="airport" aria-describedby="airport-hint" data-autocomplete-input />
+              <button class="a11y-autocomplete__clear" type="button" hidden data-autocomplete-clear>Clear</button>
+              <div class="a11y-autocomplete__popup" hidden data-autocomplete-popup><ul class="a11y-autocomplete__list" data-autocomplete-list></ul></div>
+            </div>
+            <input type="hidden" name="airport-code" data-autocomplete-hidden-value />
+            <div class="a11y-autocomplete__status" data-autocomplete-status></div>
+          </div>
+        </div>
+
+        <div class="example-code">
+          <pre tabindex="0"><code>renderOption: (item, { query, label }) =&gt; {
+  const fragment = document.createDocumentFragment();
+  // Append text nodes and &lt;mark&gt; nodes in label order.
+  // The resulting option.textContent remains exactly label.
+  return fragment;
+}</code></pre>
+        </div>
+
+        <div class="manual-checks">
+          <h3>Manual announcement check</h3>
+          <p>Navigate the results with a screen reader and confirm each option is announced once as its complete label. VoiceOver and NVDA verification remains pending until performed and recorded.</p>
+        </div>
+      </section>
+
+      <p class="example-footer"><a href="../index.html">Return to the project overview</a></p>
+    </main>
+
+    <script type="module">
+      import { createAutocomplete } from "../dist/index.js";
+
+      const airports = [
+        { label: "Athens International Airport — Athens", value: "ATH" },
+        { label: "Berlin Brandenburg Airport — Berlin", value: "BER" },
+        { label: "Bandaranaike International Airport — Colombo", value: "CMB" },
+        { label: "Lisbon Humberto Delgado Airport — Lisbon", value: "LIS" },
+        { label: "Adolfo Suárez Madrid–Barajas Airport — Madrid", value: "MAD" },
+        { label: "Paris Charles de Gaulle Airport — Paris", value: "CDG" }
+      ];
+
+      function highlightedLabel(label, query) {
+        const fragment = document.createDocumentFragment();
+        const needle = query.trim();
+        if (!needle) {
+          fragment.append(document.createTextNode(label));
+          return fragment;
+        }
+        const normalizedLabel = label.toLocaleLowerCase();
+        const normalizedNeedle = needle.toLocaleLowerCase();
+        let cursor = 0;
+        let matchIndex = normalizedLabel.indexOf(normalizedNeedle, cursor);
+        while (matchIndex !== -1) {
+          fragment.append(document.createTextNode(label.slice(cursor, matchIndex)));
+          const mark = document.createElement("mark");
+          mark.textContent = label.slice(matchIndex, matchIndex + needle.length);
+          fragment.append(mark);
+          cursor = matchIndex + needle.length;
+          matchIndex = normalizedLabel.indexOf(normalizedNeedle, cursor);
+        }
+        fragment.append(document.createTextNode(label.slice(cursor)));
+        return fragment;
+      }
+
+      const root = document.querySelector("[data-highlight-demo]");
+      if (root instanceof HTMLElement) {
+        window.highlightAutocomplete = createAutocomplete(root, {
+          items: airports,
+          maxResults: 10,
+          renderOption: (_item, context) => highlightedLabel(context.label, context.query)
+        });
+      }
+    </script>
+  </body>
+</html>

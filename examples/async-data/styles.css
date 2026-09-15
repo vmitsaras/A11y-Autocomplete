@@ -1,0 +1,203 @@
+.demo-async-callout {
+  margin-block-start: 1.25rem;
+  padding: 1rem 1.25rem;
+  border-inline-start: 0.35rem solid var(--demo-blue);
+  background: #e7eafe;
+}
+
+.demo-async-callout p,
+.demo-async-readout p {
+  margin: 0;
+}
+
+.demo-async-steps,
+.demo-async-notes {
+  max-width: 58rem;
+}
+
+.demo-async-steps li + li,
+.demo-async-notes li + li {
+  margin-block-start: 0.7rem;
+}
+
+.demo-async-heading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: start;
+  justify-content: space-between;
+  margin-block-end: 1.5rem;
+}
+
+.demo-async-heading h2,
+.demo-async-heading p {
+  margin-block-end: 0;
+}
+
+.demo-async-badge {
+  padding: 0.45rem 0.75rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: var(--demo-lime);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.demo-async-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(17rem, 0.75fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.demo-async-surface {
+  min-width: 0;
+  padding: clamp(1rem, 4vw, 2rem);
+  border: 1px solid var(--demo-line);
+  background: #f7f5ed;
+}
+
+.demo-async-surface .a11y-autocomplete {
+  max-width: 34rem;
+}
+
+.demo-async-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-block-start: 1.25rem;
+}
+
+.demo-async-action {
+  min-height: 2.75rem;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--demo-ink);
+  border-radius: 0.5rem;
+  color: var(--demo-ink);
+  background: white;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 750;
+}
+
+.demo-async-action:hover {
+  color: white;
+  background: var(--demo-blue-dark);
+}
+
+.demo-async-action:disabled {
+  color: #6b6d66;
+  background: #e8e6de;
+  cursor: not-allowed;
+}
+
+.demo-async-action--primary {
+  background: var(--demo-lime);
+}
+
+.demo-async-action:focus-visible {
+  outline: 3px solid var(--demo-blue);
+  outline-offset: 0.2rem;
+}
+
+.demo-async-readout {
+  padding: 1.25rem;
+  border-block-start: 0.5rem solid var(--demo-blue);
+  background: var(--demo-ink);
+  color: white;
+}
+
+.demo-async-readout h3 {
+  margin-block-end: 0.75rem;
+  font-size: 1.25rem;
+}
+
+.demo-async-readout dl {
+  margin: 0 0 1rem;
+}
+
+.demo-async-readout dl div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  padding-block: 0.55rem;
+  border-block-end: 1px solid #4b4e46;
+}
+
+.demo-async-readout dt {
+  color: var(--demo-dark-muted);
+}
+
+.demo-async-readout dd {
+  max-width: 16rem;
+  margin: 0;
+  font-family: "SFMono-Regular", Consolas, monospace;
+  overflow-wrap: anywhere;
+  text-align: end;
+}
+
+.demo-async-readout p {
+  color: var(--demo-dark-muted);
+  font-size: 0.9rem;
+}
+
+.demo-async-code {
+  max-width: 100%;
+  padding: 1.25rem;
+  overflow: auto;
+  border: 1px solid var(--demo-line);
+  border-radius: 0.5rem;
+  background: #181b19;
+  color: #f8f7f2;
+  font-size: 0.9rem;
+}
+
+.demo-async-code:focus-visible {
+  outline: 3px solid var(--demo-blue);
+  outline-offset: 0.2rem;
+}
+
+@media (max-width: 62rem) {
+  .demo-async-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 30rem) {
+  .demo-async-readout dl div {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+  }
+
+  .demo-async-readout dd {
+    max-width: none;
+    text-align: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-async-action {
+    scroll-behavior: auto;
+  }
+}
+
+@media (forced-colors: active) {
+  .demo-async-callout,
+  .demo-async-surface,
+  .demo-async-action,
+  .demo-async-badge,
+  .demo-async-code {
+    border-color: CanvasText;
+  }
+
+  .demo-async-callout,
+  .demo-async-badge {
+    background: Canvas;
+  }
+
+  .demo-async-readout {
+    border-color: Highlight;
+    color: CanvasText;
+    background: Canvas;
+  }
+}

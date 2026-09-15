@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Unstyled autocomplete fixture</title>
+  </head>
+  <body>
+    <main aria-labelledby="unstyled-title">
+      <h1 id="unstyled-title">Unstyled autocomplete</h1>
+      <p><strong>Browser defaults only.</strong> The component stylesheet is not loaded.</p>
+      <div data-a11y-autocomplete>
+        <label for="unstyled-city">City</label>
+        <div>
+          <input id="unstyled-city" data-autocomplete-input />
+          <button type="button" hidden data-autocomplete-clear>Clear</button>
+          <div hidden data-autocomplete-popup><ul data-autocomplete-list></ul></div>
+        </div>
+        <div data-autocomplete-status></div>
+      </div>
+    </main>
+    <script type="module">
+      import { createAutocomplete } from "../dist/index.js";
+      const root = document.querySelector("[data-a11y-autocomplete]");
+      if (root instanceof HTMLElement) createAutocomplete(root, { items: ["Athens", "Berlin", "Lisbon"], minLength: 0, openOnFocus: true });
+    </script>
+  </body>
+</html>

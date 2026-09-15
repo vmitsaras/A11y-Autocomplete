@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Async destination search | A11y Autocomplete</title>
+    <meta name="description" content="Load autocomplete suggestions from JSON only after typing, with accessible loading, errors, retry, cancellation, and no-results states." />
+    <link rel="stylesheet" href="../../dist/styles.css" />
+    <link rel="stylesheet" href="../../demo-site.css" />
+    <link rel="stylesheet" href="../example-site.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header class="demo-header">
+      <div class="demo-page demo-header__inner">
+        <a class="demo-header__brand" href="../../index.html"><span class="demo-header__mark" aria-hidden="true">Aa</span><span>A11y Autocomplete</span></a>
+        <nav class="demo-header__nav" aria-label="Example pages">
+          <ul class="demo-header__links">
+            <li><a href="../states.html">States</a></li>
+            <li><a class="example-nav-current" aria-current="page" href="./index.html">Async data</a></li>
+            <li><a href="../match-highlighting.html">Highlighting</a></li>
+            <li><a href="../datalist.html">Datalist</a></li>
+            <li><a href="../form-validator-integration.html">Form validator</a></li>
+            <li><a href="../tag-input-integration.html">Tag input</a></li>
+            <li><a href="../themes.html">Themes</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="demo-page example-main" id="main-content">
+      <header class="example-intro">
+        <p class="demo-eyebrow">Real-world async source</p>
+        <h1>Wait for intent, then load suggestions.</h1>
+        <p>A travel planner fetches a local JSON response only after someone starts typing in the destination field. Focusing an empty field stays idle, and the same source pattern can call an application API without loading data on page start.</p>
+      </header>
+
+      <section class="example-panel" aria-labelledby="scenario-title">
+        <h2 id="scenario-title">Scenario</h2>
+        <p><strong>User goal:</strong> find an airport without requesting or exposing unrelated suggestions before entering a query, and recover if the service fails.</p>
+        <div class="demo-async-callout">
+          <p><strong>Why local JSON?</strong> The request, delay, failure, and recovery remain deterministic—no API key, rate limit, personal data, or third-party availability is involved.</p>
+        </div>
+      </section>
+
+      <section class="example-panel" aria-labelledby="try-title">
+        <h2 id="try-title">Try it</h2>
+        <ol class="demo-async-steps">
+          <li>Focus the empty field and confirm the request count remains zero and no suggestions open.</li>
+          <li>Type <kbd>ber</kbd>, <kbd>greece</kbd>, or <kbd>lhr</kbd> to start the first request.</li>
+          <li>Type quickly and watch older requests cancel; use <kbd>Arrow Down</kbd>, <kbd>Arrow Up</kbd>, and <kbd>Enter</kbd> while focus stays in the input.</li>
+          <li>Choose “Fail the next request,” then use the visible retry action to recover.</li>
+          <li>Type <kbd>zzzz</kbd> to reach the no-results state.</li>
+        </ol>
+      </section>
+
+      <section class="example-panel" aria-labelledby="example-title">
+        <div class="demo-async-heading">
+          <div>
+            <p class="demo-eyebrow">Developer copy surface</p>
+            <h2 id="example-title">Destination directory</h2>
+          </div>
+          <p class="demo-async-badge">No request until typing</p>
+        </div>
+
+        <div class="demo-async-grid">
+          <div class="demo-async-surface">
+            <form data-demo-async-form>
+              <div class="a11y-autocomplete" data-a11y-autocomplete>
+                <label class="a11y-autocomplete__label" for="async-destination">Airport or destination</label>
+                <p class="a11y-autocomplete__hint" id="async-destination-hint">Start typing a city, country, or airport code.</p>
+                <div class="a11y-autocomplete__control">
+                  <input
+                    class="a11y-autocomplete__input"
+                    id="async-destination"
+                    name="destination"
+                    type="text"
+                    aria-describedby="async-destination-hint"
+                    data-autocomplete-input
+                  />
+                  <button class="a11y-autocomplete__clear" type="button" hidden data-autocomplete-clear>Clear destination</button>
+                  <div class="a11y-autocomplete__popup" hidden data-autocomplete-popup>
+                    <ul class="a11y-autocomplete__list" data-autocomplete-list></ul>
+                  </div>
+                </div>
+                <input type="hidden" name="airport-code" data-autocomplete-hidden-value />
+                <p class="a11y-autocomplete__status" role="status" aria-live="polite" aria-atomic="true" data-autocomplete-status></p>
+              </div>
+
+              <div class="demo-async-actions">
+                <button class="demo-async-action" type="button" data-demo-fail disabled>Fail the next request</button>
+                <button class="demo-async-action demo-async-action--primary" type="button" hidden data-demo-retry>Retry destination search</button>
+              </div>
+              <noscript><p>This text field remains available, but suggestions require JavaScript. Provide a server-rendered fallback when suggestions are essential to completing the form.</p></noscript>
+            </form>
+          </div>
+
+          <aside class="demo-async-readout" aria-labelledby="request-title">
+            <h3 id="request-title">Request evidence</h3>
+            <dl>
+              <div><dt>Requests started</dt><dd data-demo-request-count>0</dd></div>
+              <div><dt>Last trigger</dt><dd data-demo-request-trigger>None</dd></div>
+              <div><dt>Current query</dt><dd data-demo-request-query>Not sent</dd></div>
+              <div><dt>Request state</dt><dd data-demo-request-state>Idle</dd></div>
+              <div><dt>Selected code</dt><dd data-demo-selected-code>None</dd></div>
+            </dl>
+            <p>This diagnostic panel is visual evidence, not a second live region. The autocomplete status below the field owns announcements.</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="example-panel" aria-labelledby="a11y-title">
+        <h2 id="a11y-title">Accessibility notes</h2>
+        <ul class="demo-async-notes">
+          <li>The visible label and hint exist before JavaScript. Enhancement adds the combobox relationships to the native search input.</li>
+          <li>Loading, result counts, no results, errors, selection, and clearing use one polite status region. The list exposes <code>aria-busy</code> while a request is active.</li>
+          <li>DOM focus stays in the input while <code>aria-activedescendant</code> identifies the active option. Retry deliberately returns focus to the field.</li>
+          <li><code>minLength: 1</code> keeps focus-only interaction idle. After typing starts, the async source forwards the plugin’s <code>AbortSignal</code> to both the artificial delay and <code>fetch()</code>, so blur and newer queries cancel stale work.</li>
+          <li>No state relies on color alone. Focus indicators, forced-colors support, narrow reflow, and reduced-motion preferences are preserved by package and demo styles.</li>
+          <li>A production API still needs authorization, privacy controls, server-side limits, localized messages, and content safety appropriate to its data.</li>
+        </ul>
+      </section>
+
+      <section class="example-panel" aria-labelledby="developer-title">
+        <h2 id="developer-title">Developer notes</h2>
+        <p>The root is <code>[data-a11y-autocomplete]</code>. Its input, popup, list, status, clear button, and optional hidden value use the package’s standard child selectors. Import the built JavaScript and CSS from <code>dist</code>, then pass an async <code>source</code>.</p>
+        <pre class="demo-async-code" tabindex="0"><code>createAutocomplete(root, {
+  source: loadDestinations,
+  minLength: 1,
+  debounceDelay: 300,
+  maxResults: 6,
+  clearLabel: "Clear destination"
+});
+
+async function loadDestinations({ query, signal }) {
+  const response = await fetch("./destinations.json", { signal });
+  if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+
+  const destinations = await response.json();
+  return destinations.filter((item) =&gt; matches(item, query));
+}</code></pre>
+        <p><strong>Limitation:</strong> this fixture filters a small downloaded collection in the browser for clarity. For a large dataset, send the encoded query to your own endpoint and return an already filtered, size-limited response.</p>
+      </section>
+
+      <p class="example-footer"><a href="../../index.html">Return to the project overview</a></p>
+    </main>
+
+    <script type="module">
+      import { createAutocomplete } from "../../dist/index.js";
+
+      const root = document.querySelector("[data-a11y-autocomplete]");
+      const input = root?.querySelector("[data-autocomplete-input]");
+      const hiddenValue = root?.querySelector("[data-autocomplete-hidden-value]");
+      const failButton = document.querySelector("[data-demo-fail]");
+      const retryButton = document.querySelector("[data-demo-retry]");
+      const requestCount = document.querySelector("[data-demo-request-count]");
+      const requestTrigger = document.querySelector("[data-demo-request-trigger]");
+      const requestQuery = document.querySelector("[data-demo-request-query]");
+      const requestState = document.querySelector("[data-demo-request-state]");
+      const selectedCode = document.querySelector("[data-demo-selected-code]");
+
+      if (!(root instanceof HTMLElement)
+        || !(input instanceof HTMLInputElement)
+        || !(hiddenValue instanceof HTMLInputElement)
+        || !(failButton instanceof HTMLButtonElement)
+        || !(retryButton instanceof HTMLButtonElement)
+        || !requestCount || !requestTrigger || !requestQuery || !requestState || !selectedCode) {
+        throw new Error("Async destination demo markup is incomplete.");
+      }
+
+      let startedRequests = 0;
+      let failNextRequest = false;
+      let lastTrigger = "input";
+
+      function normalized(value) {
+        return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase().trim();
+      }
+
+      function matches(destination, query) {
+        const term = normalized(query);
+        if (!term) return true;
+        return [destination.label, destination.country, destination.value]
+          .some((value) => normalized(String(value)).includes(term));
+      }
+
+      function waitForDemoLatency(signal) {
+        return new Promise((resolve, reject) => {
+          const onAbort = () => {
+            window.clearTimeout(timeout);
+            reject(signal.reason ?? new DOMException("Aborted", "AbortError"));
+          };
+          const timeout = window.setTimeout(() => {
+            signal.removeEventListener("abort", onAbort);
+            resolve();
+          }, 650);
+          signal.addEventListener("abort", onAbort, { once: true });
+        });
+      }
+
+      async function loadDestinations({ query, signal }) {
+        startedRequests += 1;
+        requestCount.textContent = String(startedRequests);
+        requestTrigger.textContent = lastTrigger === "programmatic" ? "Retry" : "Typing";
+        requestQuery.textContent = query;
+        requestState.textContent = "Loading";
+        retryButton.hidden = true;
+
+        try {
+          await waitForDemoLatency(signal);
+          if (failNextRequest) {
+            failNextRequest = false;
+            requestState.textContent = "Failed safely";
+            throw new Error("Deterministic demo failure");
+          }
+
+          const response = await fetch("./destinations.json", { signal });
+          if (!response.ok) throw new Error(`Request failed: ${response.status}`);
+          const destinations = await response.json();
+          const results = destinations
+            .filter((destination) => matches(destination, query))
+            .slice(0, 6);
+          requestState.textContent = results.length ? `${results.length} matches returned` : "No matches returned";
+          return results;
+        } catch (error) {
+          if (signal.aborted) requestState.textContent = "Canceled as stale";
+          throw error;
+        }
+      }
+
+      const instance = createAutocomplete(root, {
+        source: loadDestinations,
+        minLength: 1,
+        debounceDelay: 300,
+        maxResults: 6,
+        clearOnEscape: true,
+        clearLabel: "Clear destination",
+        messages: {
+          loading: "Loading destinations.",
+          error: "Destinations could not be loaded. Retry the search.",
+          noResults: (query) => `No destinations found for ${query || "this search"}.`
+        }
+      });
+
+      root.addEventListener("a11y-autocomplete:input", () => {
+        lastTrigger = "input";
+        failButton.disabled = input.value.trim().length < 1;
+      });
+      root.addEventListener("a11y-autocomplete:error", () => {
+        retryButton.hidden = false;
+      });
+      root.addEventListener("a11y-autocomplete:results", () => {
+        retryButton.hidden = true;
+      });
+      root.addEventListener("a11y-autocomplete:select", () => {
+        selectedCode.textContent = hiddenValue.value || "None";
+      });
+      root.addEventListener("a11y-autocomplete:clear", () => {
+        selectedCode.textContent = "None";
+        failButton.disabled = true;
+      });
+
+      failButton.addEventListener("click", () => {
+        failNextRequest = true;
+        requestState.textContent = "Failure queued";
+        input.focus({ preventScroll: true });
+        if (document.activeElement === input && input.matches(":focus") && root.classList.contains("is-loading")) return;
+        instance.refresh({ source: "programmatic" });
+      });
+
+      retryButton.addEventListener("click", () => {
+        input.focus({ preventScroll: true });
+        lastTrigger = "programmatic";
+        if (!root.classList.contains("is-loading")) instance.refresh({ source: "programmatic" });
+      });
+
+      document.querySelector("[data-demo-async-form]")?.addEventListener("submit", (event) => event.preventDefault());
+    </script>
+  </body>
+</html>

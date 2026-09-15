@@ -1,0 +1,17 @@
+[
+  { "label": "Amsterdam Schiphol — Netherlands", "value": "AMS", "country": "Netherlands" },
+  { "label": "Athens International — Greece", "value": "ATH", "country": "Greece" },
+  { "label": "Barcelona El Prat — Spain", "value": "BCN", "country": "Spain" },
+  { "label": "Berlin Brandenburg — Germany", "value": "BER", "country": "Germany" },
+  { "label": "Copenhagen Airport — Denmark", "value": "CPH", "country": "Denmark" },
+  { "label": "Dublin Airport — Ireland", "value": "DUB", "country": "Ireland" },
+  { "label": "Helsinki Airport — Finland", "value": "HEL", "country": "Finland" },
+  { "label": "Lisbon Humberto Delgado — Portugal", "value": "LIS", "country": "Portugal" },
+  { "label": "London Heathrow — United Kingdom", "value": "LHR", "country": "United Kingdom" },
+  { "label": "Madrid Barajas — Spain", "value": "MAD", "country": "Spain" },
+  { "label": "Paris Charles de Gaulle — France", "value": "CDG", "country": "France" },
+  { "label": "Prague Václav Havel — Czechia", "value": "PRG", "country": "Czechia" },
+  { "label": "Rome Fiumicino — Italy", "value": "FCO", "country": "Italy" },
+  { "label": "Stockholm Arlanda — Sweden", "value": "ARN", "country": "Sweden" },
+  { "label": "Vienna International — Austria", "value": "VIE", "country": "Austria" }
+]

@@ -1,0 +1,101 @@
+{
+  "name": "a11y-autocomplete",
+  "version": "1.0.0",
+  "description": "A progressively enhanced, dependency-free autocomplete built with accessibility-first defaults.",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./datalist": {
+      "types": "./dist/datalist.d.ts",
+      "import": "./dist/datalist.js"
+    },
+    "./addons/form-validator": {
+      "types": "./dist/addons/form-validator.d.ts",
+      "import": "./dist/addons/form-validator.js"
+    },
+    "./addons/tag-input": {
+      "types": "./dist/addons/tag-input.d.ts",
+      "import": "./dist/addons/tag-input.js"
+    },
+    "./docs": {
+      "types": "./dist/docs.d.ts",
+      "import": "./dist/docs.js"
+    },
+    "./diagnostics": {
+      "types": "./dist/diagnostics.d.ts",
+      "import": "./dist/diagnostics.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "ACCESSIBILITY.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "copy:assets": "node -e \"const fs = require('node:fs'); if (fs.existsSync('src/styles.css')) { fs.mkdirSync('dist', { recursive: true }); fs.copyFileSync('src/styles.css', 'dist/styles.css'); }\"",
+    "build:dist": "npm run clean && tsdown && npm run copy:assets",
+    "pages:generate": "node scripts/build-pages.mjs",
+    "pages:build": "npm run build:dist && npm run pages:generate",
+    "build": "npm run pages:build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:serve": "python3 -m http.server 4173",
+    "test:e2e": "npm run build:dist && playwright test",
+    "test:a11y": "npm run build:dist && playwright test --grep @axe",
+    "test:exports": "node scripts/check-package-exports.mjs",
+    "test:all": "npm run typecheck && npm test && npm run test:e2e",
+    "pack:check": "npm pack --dry-run --cache ./.npm-cache",
+    "prepack": "npm run build:dist",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "npm run test && npm run typecheck && npm run build:dist && changeset publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vmitsaras/A11y-Autocomplete.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/vmitsaras/A11y-Autocomplete/issues"
+  },
+  "homepage": "https://github.com/vmitsaras/A11y-Autocomplete#readme",
+  "peerDependencies": {
+    "a11y-form-validator": "^1.0.19",
+    "a11y-tag-input": "^1.0.0"
+  },
+  "peerDependenciesMeta": {
+    "a11y-form-validator": {
+      "optional": true
+    },
+    "a11y-tag-input": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@changesets/cli": "^3.0.0",
+    "@playwright/test": "^1.62.1",
+    "a11y-form-validator": "^1.0.19",
+    "a11y-tag-input": "^1.0.0",
+    "happy-dom": "^20.11.2",
+    "tsdown": "^0.22.14",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  }
+}

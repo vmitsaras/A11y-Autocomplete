@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>A11y Autocomplete datalist fixture</title>
+    <link rel="stylesheet" href="../../dist/styles.css" />
+    <style>
+      body { max-width: 42rem; margin: 0 auto; padding: 2rem 1rem; font: 1rem/1.5 system-ui, sans-serif; }
+      button[type='submit'] { min-height: 2.75rem; margin-top: 1rem; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Datalist adapter browser fixture</h1>
+      <form>
+        <div class="a11y-autocomplete" data-a11y-autocomplete>
+          <label class="a11y-autocomplete__label" for="datalist-city">City code</label>
+          <p class="a11y-autocomplete__hint" id="datalist-city-hint">Choose an authored city value.</p>
+          <div class="a11y-autocomplete__control">
+            <input
+              class="a11y-autocomplete__input"
+              id="datalist-city"
+              name="city"
+              list="datalist-city-options"
+              aria-describedby="datalist-city-hint"
+              data-autocomplete-input
+            />
+            <button class="a11y-autocomplete__clear" type="button" hidden data-autocomplete-clear>Clear</button>
+            <div class="a11y-autocomplete__popup" hidden data-autocomplete-popup>
+              <ul class="a11y-autocomplete__list" data-autocomplete-list></ul>
+            </div>
+          </div>
+          <div class="a11y-autocomplete__status" data-autocomplete-status></div>
+        </div>
+        <datalist id="datalist-city-options">
+          <option value="ATH" label="Athens"></option>
+          <option value="BER" label="Berlin"></option>
+          <option value="LIS" label="Lisbon"></option>
+        </datalist>
+        <button type="submit">Submit</button>
+      </form>
+    </main>
+    <script type="module">
+      import { createDatalistAutocomplete } from "../../dist/datalist.js";
+
+      const root = document.querySelector("[data-a11y-autocomplete]");
+      if (root instanceof HTMLElement) {
+        window.datalistAutocomplete = createDatalistAutocomplete(root, {
+          datalist: "#datalist-city-options",
+          minLength: 0,
+          openOnFocus: true
+        });
+      }
+    </script>
+  </body>
+</html>

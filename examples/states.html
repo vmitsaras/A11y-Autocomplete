@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Interaction-state playground | A11y Autocomplete</title>
+    <meta name="description" content="Trigger local, grouped, async, empty, error, strict, reset, disabled, and destroyed autocomplete states." />
+    <link rel="stylesheet" href="../dist/styles.css" />
+    <link rel="stylesheet" href="../demo-site.css" />
+    <link rel="stylesheet" href="./example-site.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <header class="demo-header">
+      <div class="demo-page demo-header__inner">
+        <a class="demo-header__brand" href="../index.html"><span class="demo-header__mark" aria-hidden="true">Aa</span><span>A11y Autocomplete</span></a>
+        <nav class="demo-header__nav" aria-label="Example pages">
+          <ul class="demo-header__links">
+            <li><a class="example-nav-current" aria-current="page" href="./states.html">States</a></li>
+            <li><a href="./async-data/">Async data</a></li>
+            <li><a href="./match-highlighting.html">Highlighting</a></li>
+            <li><a href="./datalist.html">Datalist</a></li>
+            <li><a href="./form-validator-integration.html">Form validator</a></li>
+            <li><a href="./tag-input-integration.html">Tag input</a></li>
+            <li><a href="./themes.html">Themes</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="demo-page example-main" id="main-content">
+      <header class="example-intro">
+        <p class="demo-eyebrow">Deterministic playground</p>
+        <h1>Put every interaction state within reach.</h1>
+        <p>Choose a fixture, interact with the field, and inspect the live DOM state. Async work waits for you to resolve or reject it—there are no requests or timing races.</p>
+      </header>
+
+      <section class="example-panel" aria-labelledby="playground-title">
+        <h2 id="playground-title">Scenario and lifecycle controls</h2>
+        <div class="example-toolbar">
+          <div class="example-field">
+            <label for="scenario">Scenario</label>
+            <select id="scenario">
+              <option value="local">Local suggestions</option>
+              <option value="grouped">Grouped suggestions</option>
+              <option value="async">Async loading and error</option>
+              <option value="empty">Empty results</option>
+              <option value="strict">Strict validation</option>
+              <option value="reset">Form reset defaults</option>
+            </select>
+          </div>
+          <button class="example-action" type="button" data-action="resolve" aria-keyshortcuts="Alt+Shift+R" disabled>Resolve request</button>
+          <button class="example-action" type="button" data-action="reject" aria-keyshortcuts="Alt+Shift+E" disabled>Reject request</button>
+          <button class="example-action" type="button" data-action="retry" aria-keyshortcuts="Alt+Shift+T" disabled>Retry request</button>
+        </div>
+        <p class="example-note">Pending work cancels when focus leaves the field. Use the pointer controls without moving focus, or press <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> to resolve, <kbd>E</kbd> to reject, and <kbd>T</kbd> to retry.</p>
+
+        <div class="example-toolbar" aria-label="Lifecycle actions">
+          <button class="example-action" type="button" data-action="disable">Disable</button>
+          <button class="example-action" type="button" data-action="enable" disabled>Enable</button>
+          <button class="example-action" type="button" data-action="destroy">Destroy</button>
+          <button class="example-action example-action--primary" type="button" data-action="reinitialize" disabled>Reinitialize</button>
+        </div>
+
+        <div class="example-workspace">
+          <div class="example-surface" id="fixture-host"></div>
+          <aside class="state-readout" aria-labelledby="readout-title">
+            <h2 id="readout-title">Current DOM state</h2>
+            <dl>
+              <div><dt>Lifecycle</dt><dd data-readout="lifecycle">initialized</dd></div>
+              <div><dt>Expanded</dt><dd data-readout="expanded">false</dd></div>
+              <div><dt>Busy</dt><dd data-readout="busy">false</dd></div>
+              <div><dt>Invalid</dt><dd data-readout="invalid">false</dd></div>
+              <div><dt>Disabled</dt><dd data-readout="disabled">false</dd></div>
+              <div><dt>Selected value</dt><dd data-readout="value">—</dd></div>
+              <div><dt>Status text</dt><dd data-readout="status">—</dd></div>
+            </dl>
+          </aside>
+        </div>
+
+        <div class="manual-checks">
+          <h3>Manual announcement check</h3>
+          <ol>
+            <li>With a screen reader running, type in Local and confirm the result count, active option, selection, and clearing sequence.</li>
+            <li>In Async, type a query, then resolve and reject requests; confirm loading, results, and error announcements occur once.</li>
+            <li>In Strict, submit “Unknown”; confirm focus returns to the field and the invalid message is associated with it.</li>
+          </ol>
+          <p><strong>Status:</strong> VoiceOver and NVDA verification remains pending until performed and recorded.</p>
+        </div>
+      </section>
+
+      <p class="example-footer"><a href="../index.html">Return to the project overview</a></p>
+    </main>
+
+    <script type="module">
+      import { createAutocomplete } from "../dist/index.js";
+
+      const cities = [
+        { label: "Athens", value: "ath" },
+        { label: "Berlin", value: "ber" },
+        { label: "Lisbon", value: "lis" },
+        { label: "Madrid", value: "mad" },
+        { label: "Paris", value: "par" },
+        { label: "Vienna", value: "vie" }
+      ];
+      const groups = [
+        { label: "Southern Europe", items: [cities[0], cities[2], cities[3]] },
+        { label: "Central Europe", items: [cities[1], cities[5]] }
+      ];
+      const scenarioSelect = document.querySelector("#scenario");
+      const host = document.querySelector("#fixture-host");
+      const buttons = Object.fromEntries(Array.from(document.querySelectorAll("[data-action]")).map((button) => [button.dataset.action, button]));
+      let instance = null;
+      let root = null;
+      let pending = null;
+      let lifecycle = "initialized";
+      let observer = null;
+
+      function fixtureMarkup(defaults = false) {
+        const value = defaults ? "Athens" : "";
+        const hiddenValue = defaults ? "ath" : "";
+        return `<form data-playground-form>
+          <div class="a11y-autocomplete" data-a11y-autocomplete>
+            <label class="a11y-autocomplete__label" for="state-city">City</label>
+            <p class="a11y-autocomplete__hint" id="state-city-hint">Type a city name, then use Arrow keys and Enter.</p>
+            <div class="a11y-autocomplete__control">
+              <input class="a11y-autocomplete__input" id="state-city" name="city" value="${value}" aria-describedby="state-city-hint" data-autocomplete-input />
+              <button class="a11y-autocomplete__clear" type="button" hidden data-autocomplete-clear>Clear</button>
+              <div class="a11y-autocomplete__popup" hidden data-autocomplete-popup><ul class="a11y-autocomplete__list" data-autocomplete-list></ul></div>
+            </div>
+            <input type="hidden" name="city-id" value="${hiddenValue}" data-autocomplete-hidden-value />
+            <div class="a11y-autocomplete__status" data-autocomplete-status></div>
+          </div>
+          <div class="example-form-actions">
+            <button class="example-action" type="submit" data-form-action>Submit</button>
+            <button class="example-action" type="reset" data-form-action>Reset form</button>
+          </div>
+        </form>`;
+      }
+
+      function updateReadout() {
+        if (!(root instanceof HTMLElement)) return;
+        const input = root.querySelector("[data-autocomplete-input]");
+        const list = root.querySelector("[data-autocomplete-list]");
+        const status = root.querySelector("[data-autocomplete-status]");
+        const values = {
+          lifecycle,
+          expanded: input?.getAttribute("aria-expanded") ?? "not set",
+          busy: list?.getAttribute("aria-busy") ?? "not set",
+          invalid: input?.getAttribute("aria-invalid") ?? "not set",
+          disabled: String(Boolean(input?.disabled)),
+          value: input?.value || "—",
+          status: status?.textContent?.trim() || "—"
+        };
+        for (const [name, value] of Object.entries(values)) {
+          const output = document.querySelector(`[data-readout="${name}"]`);
+          if (output) output.textContent = value;
+        }
+        const destroyed = lifecycle === "destroyed";
+        buttons.destroy.disabled = destroyed;
+        buttons.disable.disabled = destroyed || Boolean(input?.disabled);
+        buttons.enable.disabled = destroyed || !input?.disabled;
+        buttons.reinitialize.disabled = !destroyed;
+        for (const control of root.closest("form")?.querySelectorAll("[data-form-action]") ?? []) control.disabled = destroyed;
+        const asyncScenario = scenarioSelect.value === "async" && !destroyed;
+        buttons.resolve.disabled = !asyncScenario || !pending;
+        buttons.reject.disabled = !asyncScenario || !pending;
+        buttons.retry.disabled = !asyncScenario || Boolean(pending);
+      }
+
+      function asyncSource({ signal }) {
+        return new Promise((resolve, reject) => {
+          const request = { resolve, reject, signal };
+          pending = request;
+          signal.addEventListener("abort", () => {
+            if (pending === request) pending = null;
+            reject(new DOMException("Aborted", "AbortError"));
+            updateReadout();
+          }, { once: true });
+          updateReadout();
+        });
+      }
+
+      function resolvePending() {
+        const request = pending;
+        pending = null;
+        request?.resolve(cities);
+        updateReadout();
+      }
+
+      function rejectPending() {
+        const request = pending;
+        pending = null;
+        request?.reject(new Error("Deterministic demo failure"));
+        updateReadout();
+      }
+
+      function retryRequest() {
+        const input = root?.querySelector("[data-autocomplete-input]");
+        if (input instanceof HTMLInputElement) input.focus({ preventScroll: true });
+        instance?.refresh({ source: "programmatic" });
+      }
+
+      function initializeScenario() {
+        if (instance && lifecycle !== "destroyed") instance.destroy();
+        pending = null;
+        observer?.disconnect();
+        const scenario = scenarioSelect.value;
+        host.innerHTML = fixtureMarkup(scenario === "reset");
+        root = host.querySelector("[data-a11y-autocomplete]");
+        const options = { items: cities, debounceDelay: 0, clearOnEscape: true };
+        if (scenario === "grouped") options.items = groups;
+        if (scenario === "async") {
+          options.items = [];
+          options.source = asyncSource;
+        }
+        if (scenario === "empty") options.items = [];
+        if (scenario === "strict" || scenario === "reset") {
+          options.strict = true;
+          options.highlightFirst = true;
+        }
+        instance = createAutocomplete(root, options);
+        lifecycle = "initialized";
+        const form = root.closest("form");
+        form.querySelector('[type="submit"]')?.addEventListener("pointerdown", (event) => event.preventDefault());
+        form.addEventListener("submit", (event) => event.preventDefault());
+        form.addEventListener("reset", () => window.setTimeout(updateReadout));
+        root.addEventListener("input", updateReadout);
+        root.addEventListener("keydown", (event) => {
+          if (!event.altKey || !event.shiftKey) return;
+          const key = event.key.toLocaleLowerCase();
+          if (key === "r" && pending) resolvePending();
+          else if (key === "e" && pending) rejectPending();
+          else if (key === "t" && !pending && scenarioSelect.value === "async") retryRequest();
+          else return;
+          event.preventDefault();
+        });
+        root.addEventListener("a11y-autocomplete:select", updateReadout);
+        root.addEventListener("a11y-autocomplete:error", updateReadout);
+        observer = new MutationObserver(updateReadout);
+        observer.observe(root, { attributes: true, childList: true, subtree: true, characterData: true });
+        updateReadout();
+      }
+
+      scenarioSelect.addEventListener("change", initializeScenario);
+      for (const action of [buttons.resolve, buttons.reject, buttons.retry]) {
+        action.addEventListener("pointerdown", (event) => event.preventDefault());
+      }
+      buttons.resolve.addEventListener("click", resolvePending);
+      buttons.reject.addEventListener("click", rejectPending);
+      buttons.retry.addEventListener("click", retryRequest);
+      buttons.disable.addEventListener("click", () => { instance?.disable(); updateReadout(); });
+      buttons.enable.addEventListener("click", () => { instance?.enable(); updateReadout(); });
+      buttons.destroy.addEventListener("click", () => {
+        instance?.destroy();
+        lifecycle = "destroyed";
+        pending = null;
+        updateReadout();
+      });
+      buttons.reinitialize.addEventListener("click", () => {
+        instance?.init();
+        lifecycle = "initialized";
+        updateReadout();
+      });
+
+      initializeScenario();
+    </script>
+  </body>
+</html>

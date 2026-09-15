@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>A11y Autocomplete browser fixture</title>
+    <link rel="stylesheet" href="../../dist/styles.css" />
+    <style>
+      body { max-width: 42rem; margin: 0 auto; padding: 2rem 1rem; font: 1rem/1.5 system-ui, sans-serif; }
+      button[type='submit'], button[type='reset'] { min-height: 2.75rem; margin: 1rem 0.5rem 0 0; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Autocomplete browser fixture</h1>
+      <form>
+        <div class="a11y-autocomplete" data-a11y-autocomplete>
+          <label class="a11y-autocomplete__label" for="city">City</label>
+          <p class="a11y-autocomplete__hint" id="city-hint">Choose a listed city.</p>
+          <div class="a11y-autocomplete__control">
+            <input class="a11y-autocomplete__input" id="city" name="city" value="" aria-describedby="city-hint" data-autocomplete-input />
+            <button class="a11y-autocomplete__clear" type="button" hidden data-autocomplete-clear>Clear</button>
+            <div class="a11y-autocomplete__popup" hidden data-autocomplete-popup>
+              <ul class="a11y-autocomplete__list" data-autocomplete-list></ul>
+            </div>
+          </div>
+          <input type="hidden" name="city-id" data-autocomplete-hidden-value />
+          <div class="a11y-autocomplete__status" data-autocomplete-status></div>
+        </div>
+        <button type="submit" id="submit">Submit</button>
+        <button type="reset" id="reset">Reset</button>
+      </form>
+    </main>
+    <script type="module">
+      import { createAutocomplete } from "../../dist/index.js";
+      import { diagnoseAutocomplete } from "../../dist/diagnostics.js";
+
+      const params = new URLSearchParams(location.search);
+      const root = document.querySelector("[data-a11y-autocomplete]");
+      const cities = [
+        { label: "Athens", value: "ath" },
+        { label: "Atlanta", value: "atl" },
+        { label: "Berlin", value: "ber" }
+      ];
+      const asyncMode = params.get("async") === "true";
+      const options = {
+        items: asyncMode ? [] : cities,
+        source: asyncMode
+          ? ({ signal }) => new Promise((resolve, reject) => {
+              const timer = window.setTimeout(() => resolve(cities), 80);
+              signal.addEventListener("abort", () => {
+                window.clearTimeout(timer);
+                reject(new DOMException("Aborted", "AbortError"));
+              }, { once: true });
+            })
+          : null,
+        debounceDelay: 0,
+        minLength: params.get("minLength") === "0" ? 0 : 1,
+        strict: params.get("strict") === "true",
+        openOnFocus: params.get("openOnFocus") === "true",
+        selectOnBlur: params.get("selectOnBlur") === "true",
+        highlightFirst: params.get("highlightFirst") === "true",
+        clearOnEscape: true
+      };
+      if (root instanceof HTMLElement) window.autocomplete = createAutocomplete(root, options);
+      window.diagnoseAutocomplete = diagnoseAutocomplete;
+    </script>
+  </body>
+</html>

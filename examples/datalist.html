@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Native datalist adapter | A11y Autocomplete</title>
+    <meta name="description" content="Enhance authored datalist suggestions while preserving the native no JavaScript fallback." />
+    <link rel="stylesheet" href="../dist/styles.css" />
+    <link rel="stylesheet" href="../demo-site.css" />
+    <link rel="stylesheet" href="./example-site.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <header class="demo-header">
+      <div class="demo-page demo-header__inner">
+        <a class="demo-header__brand" href="../index.html"><span class="demo-header__mark" aria-hidden="true">Aa</span><span>A11y Autocomplete</span></a>
+        <nav class="demo-header__nav" aria-label="Example pages">
+          <ul class="demo-header__links">
+            <li><a href="./states.html">States</a></li>
+            <li><a href="./async-data/">Async data</a></li>
+            <li><a href="./match-highlighting.html">Highlighting</a></li>
+            <li><a class="example-nav-current" aria-current="page" href="./datalist.html">Datalist</a></li>
+            <li><a href="./form-validator-integration.html">Form validator</a></li>
+            <li><a href="./tag-input-integration.html">Tag input</a></li>
+            <li><a href="./themes.html">Themes</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="demo-page example-main" id="main-content">
+      <header class="example-intro">
+        <p class="demo-eyebrow">Progressive enhancement</p>
+        <h1>Author suggestions once, keep the native fallback.</h1>
+        <p>The field below begins as an input associated with a real datalist. The adapter snapshots those options, then uses the package combobox behavior while JavaScript is active.</p>
+      </header>
+
+      <section class="example-panel" aria-labelledby="datalist-example-title">
+        <h2 id="datalist-example-title">City value and label example</h2>
+        <p class="example-note">Focus the empty field to browse. The short city code is the value placed in the input and submitted by the form. The city name is supporting option text.</p>
+
+        <div class="example-workspace">
+          <div class="example-surface">
+            <form data-datalist-form>
+              <div class="a11y-autocomplete" data-a11y-autocomplete>
+                <label class="a11y-autocomplete__label" for="datalist-example-city">City code</label>
+                <p class="a11y-autocomplete__hint" id="datalist-example-hint">Try the value “BER” or the label “Berlin”.</p>
+                <div class="a11y-autocomplete__control">
+                  <input
+                    class="a11y-autocomplete__input"
+                    id="datalist-example-city"
+                    name="city"
+                    list="datalist-example-options"
+                    aria-describedby="datalist-example-hint"
+                    data-autocomplete-input
+                  />
+                  <button class="a11y-autocomplete__clear" type="button" hidden data-autocomplete-clear>Clear</button>
+                  <div class="a11y-autocomplete__popup" hidden data-autocomplete-popup>
+                    <ul class="a11y-autocomplete__list" data-autocomplete-list></ul>
+                  </div>
+                </div>
+                <div class="a11y-autocomplete__status" data-autocomplete-status></div>
+              </div>
+              <datalist id="datalist-example-options">
+                <option value="ATH" label="Athens"></option>
+                <option value="BER" label="Berlin"></option>
+                <option value="LIS" label="Lisbon"></option>
+                <option value="MAD" label="Madrid"></option>
+              </datalist>
+              <div class="example-form-actions">
+                <button class="example-action example-action--primary" type="submit">Read submitted value</button>
+              </div>
+            </form>
+          </div>
+
+          <aside class="state-readout" aria-labelledby="datalist-readout-title">
+            <h2 id="datalist-readout-title">Adapter state</h2>
+            <dl>
+              <div><dt>Lifecycle</dt><dd data-datalist-readout="lifecycle">initialized</dd></div>
+              <div><dt>Native list attribute</dt><dd data-datalist-readout="list">removed while enhanced</dd></div>
+              <div><dt>Authored options</dt><dd data-datalist-readout="count">4</dd></div>
+              <div><dt>Submitted value</dt><dd data-datalist-readout="submitted">Not submitted</dd></div>
+            </dl>
+          </aside>
+        </div>
+
+        <div class="example-toolbar" aria-label="Datalist lifecycle actions">
+          <button class="example-action" type="button" data-datalist-action="add">Add Rome to the datalist</button>
+          <button class="example-action" type="button" data-datalist-action="refresh">Refresh snapshot</button>
+          <button class="example-action" type="button" data-datalist-action="destroy">Destroy</button>
+          <button class="example-action example-action--primary" type="button" data-datalist-action="initialize" disabled>Reinitialize</button>
+        </div>
+        <p class="example-note" data-datalist-note>Adding Rome changes the authored datalist only. Call Refresh snapshot before the custom popup can use it.</p>
+
+        <div class="manual-checks">
+          <h3>Fallback and announcement check</h3>
+          <ol>
+            <li>Disable JavaScript and confirm the input keeps `list="datalist-example-options"` and offers native suggestions.</li>
+            <li>Enable JavaScript, focus the empty field, and confirm the result count and active option sequence use the existing custom combobox.</li>
+            <li>Choose Berlin and confirm the visible and submitted value is `BER` while Berlin remains supporting option text.</li>
+            <li>Destroy the adapter and confirm focus stays where it is while the native list association returns.</li>
+          </ol>
+          <p><strong>Status:</strong> Native and enhanced VoiceOver and NVDA checks remain pending until performed and recorded.</p>
+        </div>
+      </section>
+
+      <p class="example-footer"><a href="../index.html">Return to the project overview</a></p>
+    </main>
+
+    <script type="module">
+      import { createDatalistAutocomplete } from "../dist/datalist.js";
+
+      const root = document.querySelector("[data-a11y-autocomplete]");
+      const input = document.querySelector("[data-autocomplete-input]");
+      const datalist = document.querySelector("#datalist-example-options");
+      const form = document.querySelector("[data-datalist-form]");
+      const note = document.querySelector("[data-datalist-note]");
+      const buttons = Object.fromEntries(Array.from(document.querySelectorAll("[data-datalist-action]")).map((button) => [button.dataset.datalistAction, button]));
+      const outputs = Object.fromEntries(Array.from(document.querySelectorAll("[data-datalist-readout]")).map((output) => [output.dataset.datalistReadout, output]));
+      let instance = createDatalistAutocomplete(root, {
+        datalist: "#datalist-example-options",
+        minLength: 0,
+        openOnFocus: true
+      });
+      let lifecycle = "initialized";
+
+      function updateReadout() {
+        outputs.lifecycle.textContent = lifecycle;
+        outputs.list.textContent = input.hasAttribute("list") ? input.getAttribute("list") : "removed while enhanced";
+        outputs.count.textContent = String(datalist.options.length);
+        buttons.destroy.disabled = lifecycle === "destroyed";
+        buttons.initialize.disabled = lifecycle === "initialized";
+        buttons.refresh.disabled = lifecycle === "destroyed";
+      }
+
+      buttons.add.addEventListener("click", () => {
+        if (Array.from(datalist.options).some((option) => option.value === "ROM")) return;
+        const option = document.createElement("option");
+        option.value = "ROM";
+        option.label = "Rome";
+        datalist.append(option);
+        note.textContent = "Rome is now authored, but the custom snapshot is unchanged until Refresh snapshot is used.";
+        updateReadout();
+      });
+      buttons.refresh.addEventListener("click", () => {
+        instance.refresh();
+        note.textContent = "The custom snapshot now matches the authored datalist.";
+      });
+      buttons.destroy.addEventListener("click", () => {
+        instance.destroy();
+        lifecycle = "destroyed";
+        note.textContent = "The native list association is restored. Reinitialize to enhance the current authored options again.";
+        updateReadout();
+      });
+      buttons.initialize.addEventListener("click", () => {
+        instance.init();
+        lifecycle = "initialized";
+        note.textContent = "The adapter took a fresh snapshot and removed the native list association again.";
+        updateReadout();
+      });
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        outputs.submitted.textContent = String(new FormData(form).get("city") || "Empty");
+      });
+      updateReadout();
+    </script>
+  </body>
+</html>

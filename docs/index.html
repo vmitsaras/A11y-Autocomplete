@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Accessible Autocomplete for the Web | A11y Autocomplete</title>
+    <meta
+      name="description"
+      content="Add dependency-free autocomplete with accessible keyboard navigation, live announcements, strict selection, and cleanup-safe behavior."
+    />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="https://vmitsaras.github.io/A11y-Autocomplete/" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%23d9ff54'/%3E%3Ctext x='32' y='41' text-anchor='middle' font-family='Arial,sans-serif' font-size='28' font-weight='700' fill='%23151711'%3EAa%3C/text%3E%3C/svg%3E" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="A11y Autocomplete" />
+    <meta property="og:title" content="Accessible Autocomplete for the Web | A11y Autocomplete" />
+    <meta
+      property="og:description"
+      content="Add dependency-free autocomplete with accessible keyboard navigation, live announcements, strict selection, and cleanup-safe behavior."
+    />
+    <meta property="og:url" content="https://vmitsaras.github.io/A11y-Autocomplete/" />
+    <meta property="og:image" content="https://vmitsaras.github.io/A11y-Autocomplete/social-preview.png" />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="640" />
+    <meta
+      property="og:image:alt"
+      content="A11y Autocomplete: dependency-free autocomplete with accessible defaults, illustrated by a focused input and suggestion list."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Accessible Autocomplete for the Web | A11y Autocomplete" />
+    <meta
+      name="twitter:description"
+      content="Add dependency-free autocomplete with accessible keyboard navigation, live announcements, strict selection, and cleanup-safe behavior."
+    />
+    <meta name="twitter:image" content="https://vmitsaras.github.io/A11y-Autocomplete/social-preview.png" />
+    <meta
+      name="twitter:image:alt"
+      content="A11y Autocomplete: dependency-free autocomplete with accessible defaults, illustrated by a focused input and suggestion list."
+    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebPage",
+            "@id": "https://vmitsaras.github.io/A11y-Autocomplete/#webpage",
+            "url": "https://vmitsaras.github.io/A11y-Autocomplete/",
+            "name": "Accessible Autocomplete for the Web | A11y Autocomplete",
+            "description": "Add dependency-free autocomplete with accessible keyboard navigation, live announcements, strict selection, and cleanup-safe behavior.",
+            "image": "https://vmitsaras.github.io/A11y-Autocomplete/social-preview.png",
+            "author": { "@id": "https://github.com/vmitsaras/#person" },
+            "mainEntity": { "@id": "https://vmitsaras.github.io/A11y-Autocomplete/#software" }
+          },
+          {
+            "@type": "SoftwareSourceCode",
+            "@id": "https://vmitsaras.github.io/A11y-Autocomplete/#software",
+            "name": "A11y Autocomplete",
+            "description": "A progressively enhanced, dependency-free autocomplete built with accessibility-first defaults.",
+            "codeRepository": "https://github.com/vmitsaras/A11y-Autocomplete",
+            "programmingLanguage": ["TypeScript", "JavaScript"],
+            "runtimePlatform": "Browser",
+            "version": "1.0.0",
+            "license": "https://github.com/vmitsaras/A11y-Autocomplete/blob/main/LICENSE",
+            "image": "https://vmitsaras.github.io/A11y-Autocomplete/social-preview.png",
+            "keywords": [
+              "accessible autocomplete",
+              "combobox",
+              "keyboard navigation",
+              "live announcements",
+              "progressive enhancement",
+              "TypeScript"
+            ],
+            "featureList": [
+              "Keyboard navigation with focus retained on the input",
+              "Live announcements for results, selections, loading, errors, and clearing",
+              "Optional strict-selection validation",
+              "Abortable asynchronous sources with stale-response protection",
+              "Cleanup-safe destroy and reinitialization lifecycle"
+            ],
+            "creator": { "@id": "https://github.com/vmitsaras/#person" },
+            "targetProduct": {
+              "@type": "SoftwareApplication",
+              "name": "A11y Autocomplete",
+              "applicationCategory": "DeveloperApplication",
+              "operatingSystem": "Any",
+              "runtimePlatform": "Browser"
+            },
+            "sameAs": [
+              "https://github.com/vmitsaras/A11y-Autocomplete",
+              "https://www.npmjs.com/package/a11y-autocomplete"
+            ]
+          },
+          {
+            "@type": "Person",
+            "@id": "https://github.com/vmitsaras/#person",
+            "name": "Vasileios Mitsaras",
+            "url": "https://github.com/vmitsaras/",
+            "sameAs": [
+              "https://github.com/vmitsaras/",
+              "https://linkedin.com/in/vasilis-mitsaras"
+            ]
+          }
+        ]
+      }
+    </script>
+    <link rel="stylesheet" href="./dist/styles.css" />
+    <link rel="stylesheet" href="./demo-site.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header class="demo-header">
+      <div class="demo-page demo-header__inner">
+        <a class="demo-header__brand" href="#top" aria-label="A11y Autocomplete home">
+          <span class="demo-header__mark" aria-hidden="true">Aa</span>
+          <span>A11y Autocomplete</span>
+        </a>
+        <nav class="demo-header__nav" aria-label="Page navigation">
+          <ul class="demo-header__links">
+            <li><a href="#demo">Demo</a></li>
+            <li><a href="#examples">Examples</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#start">Get started</a></li>
+            <li><a href="#accessibility">Accessibility</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <section class="demo-hero demo-page" id="top" aria-labelledby="page-title">
+        <div class="demo-hero__copy">
+          <p class="demo-eyebrow">Progressive enhancement for editable comboboxes</p>
+          <h1 id="page-title">Autocomplete that keeps the input in charge.</h1>
+          <p class="demo-hero__lede">
+            A11y Autocomplete adds filtered suggestions, keyboard navigation, live status messages, and optional strict validation to your existing labeled text input—without a runtime dependency.
+          </p>
+          <div class="demo-actions">
+            <a class="demo-button demo-button--primary" href="#demo">Try the live demos</a>
+            <a class="demo-button demo-button--secondary" href="./examples/states.html">Explore examples</a>
+          </div>
+        </div>
+
+        <aside class="demo-hero__facts" aria-label="Package facts">
+          <p class="demo-hero__facts-label">Package snapshot</p>
+          <dl class="demo-facts">
+            <div>
+              <dt>Runtime dependencies</dt>
+              <dd>0</dd>
+            </div>
+            <div>
+              <dt>Current version</dt>
+              <dd>1.0.0</dd>
+            </div>
+            <div>
+              <dt>Runtime</dt>
+              <dd>Browser</dd>
+            </div>
+            <div>
+              <dt>License</dt>
+              <dd>MIT</dd>
+            </div>
+          </dl>
+        </aside>
+      </section>
+
+      <section class="demo-section demo-section--dark" id="demo" aria-labelledby="demo-title">
+        <div class="demo-page">
+          <div class="demo-section__heading demo-section__heading--split">
+            <div>
+              <p class="demo-eyebrow">Live demo</p>
+              <h2 id="demo-title">Try the interaction, not just the screenshot.</h2>
+            </div>
+            <p>
+              Type in the local fields or focus the native datalist example. Use <kbd>Arrow Down</kbd> and <kbd>Arrow Up</kbd> to move through suggestions, <kbd>Enter</kbd> to choose one, and <kbd>Escape</kbd> to close the popup.
+            </p>
+          </div>
+
+          <div class="demo-preview-grid">
+            <article class="demo-preview">
+              <div class="demo-preview__heading">
+                <p class="demo-preview__number" aria-hidden="true">01</p>
+                <div>
+                  <h3>Local suggestions</h3>
+                  <p>Filter a short city list and select with keyboard, pointer, or touch.</p>
+                </div>
+              </div>
+
+              <div class="demo-preview__surface">
+                <div class="a11y-autocomplete" data-a11y-autocomplete data-demo-cities>
+                  <label class="a11y-autocomplete__label" for="demo-city">City</label>
+                  <p class="a11y-autocomplete__hint" id="demo-city-hint">Try “b”, “li”, or “pa”.</p>
+                  <div class="a11y-autocomplete__control">
+                    <input
+                      class="a11y-autocomplete__input"
+                      id="demo-city"
+                      name="demo-city"
+                      type="text"
+                      autocomplete="off"
+                      aria-describedby="demo-city-hint"
+                      data-autocomplete-input
+                    />
+                    <button class="a11y-autocomplete__clear" type="button" hidden data-autocomplete-clear>Clear</button>
+                    <div class="a11y-autocomplete__popup" hidden data-autocomplete-popup>
+                      <ul class="a11y-autocomplete__list" data-autocomplete-list></ul>
+                    </div>
+                  </div>
+                  <div class="a11y-autocomplete__status" role="status" aria-live="polite" aria-atomic="true" data-autocomplete-status></div>
+                </div>
+              </div>
+            </article>
+
+            <article class="demo-preview">
+              <div class="demo-preview__heading">
+                <p class="demo-preview__number" aria-hidden="true">02</p>
+                <div>
+                  <h3>Strict selection</h3>
+                  <p>Leave an unmatched value to see list membership validated on blur.</p>
+                </div>
+              </div>
+
+              <div class="demo-preview__surface">
+                <div class="a11y-autocomplete" data-a11y-autocomplete data-demo-strict>
+                  <label class="a11y-autocomplete__label" for="demo-hub">European hub</label>
+                  <p class="a11y-autocomplete__hint" id="demo-hub-hint">Choose Athens, Berlin, Lisbon, Madrid, Paris, or Vienna.</p>
+                  <div class="a11y-autocomplete__control">
+                    <input
+                      class="a11y-autocomplete__input"
+                      id="demo-hub"
+                      name="demo-hub"
+                      type="search"
+                      autocomplete="off"
+                      aria-describedby="demo-hub-hint"
+                      data-autocomplete-input
+                    />
+                    <button class="a11y-autocomplete__clear" type="button" hidden data-autocomplete-clear>Clear</button>
+                    <div class="a11y-autocomplete__popup" hidden data-autocomplete-popup>
+                      <ul class="a11y-autocomplete__list" data-autocomplete-list></ul>
+                    </div>
+                  </div>
+                  <div class="a11y-autocomplete__status" role="status" aria-live="polite" aria-atomic="true" data-autocomplete-status></div>
+                </div>
+              </div>
+            </article>
+
+            <article class="demo-preview">
+              <div class="demo-preview__heading">
+                <p class="demo-preview__number" aria-hidden="true">03</p>
+                <div>
+                  <h3>Native datalist fallback</h3>
+                  <p>Author values in HTML, then enhance the same suggestions when JavaScript is available.</p>
+                </div>
+              </div>
+
+              <div class="demo-preview__surface">
+                <div class="a11y-autocomplete" data-a11y-autocomplete data-demo-datalist>
+                  <label class="a11y-autocomplete__label" for="demo-city-code">City code</label>
+                  <p class="a11y-autocomplete__hint" id="demo-city-code-hint">Focus to browse values. Labels remain supporting text.</p>
+                  <div class="a11y-autocomplete__control">
+                    <input
+                      class="a11y-autocomplete__input"
+                      id="demo-city-code"
+                      name="demo-city-code"
+                      type="text"
+                      list="demo-city-options"
+                      aria-describedby="demo-city-code-hint"
+                      data-autocomplete-input
+                    />
+                    <button class="a11y-autocomplete__clear" type="button" hidden data-autocomplete-clear>Clear</button>
+                    <div class="a11y-autocomplete__popup" hidden data-autocomplete-popup>
+                      <ul class="a11y-autocomplete__list" data-autocomplete-list></ul>
+                    </div>
+                  </div>
+                  <div class="a11y-autocomplete__status" role="status" aria-live="polite" aria-atomic="true" data-autocomplete-status></div>
+                </div>
+                <datalist id="demo-city-options">
+                  <option value="ATH" label="Athens"></option>
+                  <option value="BER" label="Berlin"></option>
+                  <option value="LIS" label="Lisbon"></option>
+                  <option value="MAD" label="Madrid"></option>
+                </datalist>
+              </div>
+            </article>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="demo-section demo-page" id="features" aria-labelledby="features-title">
+        <div class="demo-section__heading">
+          <p class="demo-eyebrow">What the package handles</p>
+          <h2 id="features-title">A small core with explicit behavior.</h2>
+          <p>
+            The plugin enhances declared markup, manages the combobox interaction, and gives consuming applications control over data, rendering, messages, and validation policy.
+          </p>
+        </div>
+
+        <div class="demo-card-grid">
+          <article class="demo-card">
+            <p class="demo-card__index" aria-hidden="true">A</p>
+            <h3>Keyboard and focus</h3>
+            <p>Arrow keys move the active suggestion while DOM focus stays on the input. Enter selects; Escape closes.</p>
+          </article>
+          <article class="demo-card">
+            <p class="demo-card__index" aria-hidden="true">B</p>
+            <h3>Status and state</h3>
+            <p>ARIA state stays synchronized, and the status element reports results, loading, errors, selection, and clearing.</p>
+          </article>
+          <article class="demo-card">
+            <p class="demo-card__index" aria-hidden="true">C</p>
+            <h3>Async control</h3>
+            <p>Async sources receive an <code>AbortSignal</code>; stale or out-of-order responses cannot replace current results.</p>
+          </article>
+          <article class="demo-card">
+            <p class="demo-card__index" aria-hidden="true">D</p>
+            <h3>Lifecycle cleanup</h3>
+            <p><code>destroy()</code> removes listeners and restores author-provided DOM and ARIA state. The same instance can initialize again.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="demo-section demo-section--tint" id="start" aria-labelledby="start-title">
+        <div class="demo-page">
+          <div class="demo-section__heading demo-section__heading--split">
+            <div>
+              <p class="demo-eyebrow">Get started</p>
+              <h2 id="start-title">Install, declare, initialize.</h2>
+            </div>
+            <p>The package does not initialize automatically. Import its baseline styles, then create an instance for a declared root.</p>
+          </div>
+
+          <div class="demo-code-grid">
+            <article class="demo-code-card">
+              <div class="demo-code-card__heading">
+                <h3>1. Install</h3>
+                <span>Shell</span>
+              </div>
+              <pre tabindex="0"><code>npm install a11y-autocomplete</code></pre>
+            </article>
+
+            <article class="demo-code-card">
+              <div class="demo-code-card__heading">
+                <h3>2. Initialize</h3>
+                <span>TypeScript / JavaScript</span>
+              </div>
+              <pre tabindex="0"><code>import { createAutocomplete } from "a11y-autocomplete";
+import "a11y-autocomplete/styles.css";
+
+const root = document.querySelector(
+  "[data-a11y-autocomplete]"
+);
+
+if (root instanceof HTMLElement) {
+  createAutocomplete(root, {
+    items: ["Athens", "Berlin", "Lisbon"]
+  });
+}</code></pre>
+            </article>
+          </div>
+
+          <div class="demo-markup">
+            <div class="demo-markup__intro">
+              <p class="demo-eyebrow">Required markup</p>
+              <h3>Begin with a real label and text input.</h3>
+              <p>Place optional help text below the label and nest the empty popup inside the control. The plugin adds combobox and listbox state plus a visual result summary during initialization.</p>
+            </div>
+            <pre tabindex="0"><code>&lt;div class="a11y-autocomplete" data-a11y-autocomplete&gt;
+  &lt;label class="a11y-autocomplete__label" for="city"&gt;City&lt;/label&gt;
+  &lt;p class="a11y-autocomplete__hint" id="city-hint"&gt;Type a city name.&lt;/p&gt;
+  &lt;div class="a11y-autocomplete__control"&gt;
+    &lt;input class="a11y-autocomplete__input" id="city" type="text" aria-describedby="city-hint" data-autocomplete-input /&gt;
+    &lt;button class="a11y-autocomplete__clear" type="button" hidden data-autocomplete-clear&gt;Clear&lt;/button&gt;
+    &lt;div class="a11y-autocomplete__popup" hidden data-autocomplete-popup&gt;
+      &lt;ul class="a11y-autocomplete__list" data-autocomplete-list&gt;&lt;/ul&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="a11y-autocomplete__status" role="status" aria-live="polite" data-autocomplete-status&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-section demo-page" id="configuration" aria-labelledby="configuration-title">
+        <div class="demo-section__heading">
+          <p class="demo-eyebrow">Configuration</p>
+          <h2 id="configuration-title">Useful options, with conservative defaults.</h2>
+          <p>These are the main behavior options. Selector overrides, custom filters, message callbacks, and rendering hooks are also available in the public type.</p>
+        </div>
+
+        <div class="demo-table-wrap" tabindex="0" role="region" aria-label="Autocomplete options table">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Option</th>
+                <th scope="col">Type</th>
+                <th scope="col">Default</th>
+                <th scope="col">Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row"><code>items</code></th>
+                <td>Array</td>
+                <td><code>[]</code></td>
+                <td>Provides flat or grouped local suggestions.</td>
+              </tr>
+              <tr>
+                <th scope="row"><code>source</code></th>
+                <td>Async function</td>
+                <td><code>null</code></td>
+                <td>Loads suggestions with cancellation and stale-response protection.</td>
+              </tr>
+              <tr>
+                <th scope="row"><code>minLength</code></th>
+                <td>Number</td>
+                <td><code>1</code></td>
+                <td>Sets the query length required before results are prepared.</td>
+              </tr>
+              <tr>
+                <th scope="row"><code>openOnFocus</code></th>
+                <td>Boolean</td>
+                <td><code>false</code></td>
+                <td>Refreshes suggestions on focus. Pair with <code>minLength: 0</code> to browse before typing; an async source may receive an empty query as soon as focus enters.</td>
+              </tr>
+              <tr>
+                <th scope="row"><code>maxResults</code></th>
+                <td>Number</td>
+                <td><code>8</code></td>
+                <td>Caps flat, grouped, filtered, and async result sets.</td>
+              </tr>
+              <tr>
+                <th scope="row"><code>strict</code></th>
+                <td>Boolean</td>
+                <td><code>false</code></td>
+                <td>Requires a non-empty value to match an available suggestion.</td>
+              </tr>
+              <tr>
+                <th scope="row"><code>highlightFirst</code></th>
+                <td>Boolean</td>
+                <td><code>false</code></td>
+                <td>Makes the first result active when the popup opens.</td>
+              </tr>
+              <tr>
+                <th scope="row"><code>clearOnEscape</code></th>
+                <td>Boolean</td>
+                <td><code>false</code></td>
+                <td>Allows Escape to clear the value when the popup is already closed.</td>
+              </tr>
+              <tr>
+                <th scope="row"><code>autoComplete</code></th>
+                <td><code>"list" | "none"</code></td>
+                <td><code>"list"</code></td>
+                <td>Chooses query-corresponding or query-independent suggestion behavior.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="demo-section__note demo-section__note--light">
+          For methods, events, selectors, and every option, read the <a href="https://github.com/vmitsaras/A11y-Autocomplete#api">repository API overview</a> or inspect the exported TypeScript types.
+        </p>
+      </section>
+
+      <section class="demo-section demo-section--dark" id="accessibility" aria-labelledby="accessibility-title">
+        <div class="demo-page">
+          <div class="demo-section__heading demo-section__heading--split">
+            <div>
+              <p class="demo-eyebrow">Accessibility behavior</p>
+              <h2 id="accessibility-title">The interaction is explicit. So are your responsibilities.</h2>
+            </div>
+            <p>
+              The plugin follows the editable combobox pattern, keeps focus on the input during option navigation, and restores author-provided state on destroy. Automated coverage is evidence, not a claim of complete WCAG conformance.
+            </p>
+          </div>
+
+          <div class="demo-accessibility-grid">
+            <div class="demo-table-wrap demo-table-wrap--dark" tabindex="0" role="region" aria-label="Keyboard interaction table">
+              <table>
+                <caption>Keyboard interaction</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Key</th>
+                    <th scope="col">Behavior</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row"><kbd>Arrow Down</kbd> / <kbd>Arrow Up</kbd></th>
+                    <td>Opens suggestions and moves the active option.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><kbd>Enter</kbd></th>
+                    <td>Selects the active suggestion.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><kbd>Escape</kbd></th>
+                    <td>Closes the popup. An optional second press clears a closed field.</td>
+                  </tr>
+                  <tr>
+                    <th scope="row"><kbd>Tab</kbd></th>
+                    <td>Continues normal focus navigation and closes or commits a configured blur selection.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <aside class="demo-responsibilities">
+              <h3>Integration checklist</h3>
+              <ul>
+                <li>Provide a meaningful visible label or another valid accessible name.</li>
+                <li>Check custom theme colors and focus visibility in the consuming interface.</li>
+                <li>Keep custom option rendering presentational; interactive descendants are rejected.</li>
+                <li>Test localized content, zoom, forced colors, reduced motion, touch, and relevant screen readers.</li>
+              </ul>
+              <a class="demo-text-link" href="https://github.com/vmitsaras/A11y-Autocomplete/blob/main/ACCESSIBILITY.md">Read the accessibility evidence and manual matrix</a>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="demo-section demo-page" id="resources" aria-labelledby="resources-title">
+        <div class="demo-section__heading" id="examples">
+          <p class="demo-eyebrow">Dedicated examples</p>
+          <h2>Inspect states, adapters, rendering hooks, and styling boundaries.</h2>
+          <p>Each focused page demonstrates one integration concern without crowding the core examples above.</p>
+        </div>
+
+        <div class="demo-link-grid demo-link-grid--examples">
+          <a class="demo-link-card" href="./examples/async-data/">
+            <span class="demo-link-card__meta">Async integration</span>
+            <strong>Async destination search</strong>
+            <span>Wait for a typed query, fetch JSON, cancel stale work, and recover from a deterministic failure.</span>
+          </a>
+          <a class="demo-link-card" href="./examples/states.html">
+            <span class="demo-link-card__meta">State coverage</span>
+            <strong>Interaction-state playground</strong>
+            <span>Trigger grouped, async, empty, error, strict, reset, disabled, and destroyed states.</span>
+          </a>
+          <a class="demo-link-card" href="./examples/match-highlighting.html">
+            <span class="demo-link-card__meta">Rendering hook</span>
+            <strong>Match highlighting</strong>
+            <span>Emphasize matching text while preserving each option’s complete text label.</span>
+          </a>
+          <a class="demo-link-card" href="./examples/datalist.html">
+            <span class="demo-link-card__meta">Progressive enhancement</span>
+            <strong>Native datalist adapter</strong>
+            <span>Compare the authored fallback, explicit refresh, value and label handling, and reversible lifecycle.</span>
+          </a>
+          <a class="demo-link-card" href="./examples/form-validator-integration.html">
+            <span class="demo-link-card__meta">Validation addon</span>
+            <strong>A11y Form Validator integration</strong>
+            <span>Give strict selection errors, the summary, and invalid submit focus one validation owner.</span>
+          </a>
+          <a class="demo-link-card" href="./examples/tag-input-integration.html">
+            <span class="demo-link-card__meta">Composer addon</span>
+            <strong>Autocomplete to tag input</strong>
+            <span>Turn selected suggestions into removable tags while preserving custom values and native form submission.</span>
+          </a>
+          <a class="demo-link-card" href="./examples/themes.html">
+            <span class="demo-link-card__meta">Styling boundary</span>
+            <strong>Theme gallery</strong>
+            <span>Compare unstyled, dark, forced-color-ready, compact, and long-label configurations.</span>
+          </a>
+        </div>
+
+        <div class="demo-section__heading demo-section__heading--resources">
+          <p class="demo-eyebrow">Implementation and evidence</p>
+          <h2 id="resources-title">Continue with the level of detail you need.</h2>
+        </div>
+
+        <div class="demo-link-grid">
+          <a class="demo-link-card" href="https://github.com/vmitsaras/A11y-Autocomplete#readme">
+            <span class="demo-link-card__meta">Implementation guide</span>
+            <strong>README and public API</strong>
+            <span>Review markup, options, lifecycle methods, events, and development commands.</span>
+          </a>
+          <a class="demo-link-card" href="https://github.com/vmitsaras/A11y-Autocomplete/blob/main/ACCESSIBILITY.md">
+            <span class="demo-link-card__meta">Verification record</span>
+            <strong>Accessibility evidence</strong>
+            <span>Inspect automated coverage, the manual release matrix, and known limitations.</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="demo-section demo-section--limits" id="limitations" aria-labelledby="limitations-title">
+        <div class="demo-page demo-limits">
+          <div>
+            <p class="demo-eyebrow">Boundaries</p>
+            <h2 id="limitations-title">What this package does not decide.</h2>
+          </div>
+          <ul>
+            <li>It does not provide inline completion, a remote data service, or a required-field policy.</li>
+            <li>With <code>openOnFocus: true</code> and <code>minLength: 0</code>, focusing before typing may send an empty query; remote sources remain responsible for authorization, privacy, request volume, cancellation, appropriate results, and retry behavior.</li>
+            <li>Lifecycle event details can contain the query, value, item, results, error, and instance references; allowlist telemetry fields instead of forwarding complete event payloads.</li>
+            <li>It cannot validate the accessibility of surrounding form flows or colors overridden by a consuming theme.</li>
+            <li>Automated axe and interaction tests do not replace manual assistive-technology testing.</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <footer class="demo-footer" data-demo-footer>
+      <div class="demo-page demo-footer__inner">
+        <div class="demo-footer__brand">
+          <p class="demo-footer__eyebrow">Accessibility plugin demo</p>
+          <p class="demo-footer__credit">
+            <span class="demo-footer__plugin">A11y Autocomplete</span>
+            <span class="demo-footer__separator" aria-hidden="true">&middot;</span>
+            Built by <a class="demo-footer__link" href="https://github.com/vmitsaras/">Vasileios Mitsaras</a>
+            <span class="demo-footer__separator" aria-hidden="true">&middot;</span>
+            <a class="demo-footer__link" href="https://linkedin.com/in/vasilis-mitsaras">LinkedIn profile</a>
+          </p>
+          <p class="demo-footer__meta">
+            <span>a11y-autocomplete</span>
+            <span class="demo-footer__separator" aria-hidden="true">&middot;</span>
+            <span>MIT License</span>
+          </p>
+        </div>
+
+        <nav class="demo-footer__nav" aria-label="Project links">
+          <ul class="demo-footer__links">
+            <li class="demo-footer__item">
+              <a class="demo-footer__link" href="https://github.com/vmitsaras/A11y-Autocomplete">GitHub repository</a>
+            </li>
+            <li class="demo-footer__item">
+              <a class="demo-footer__link" href="https://www.npmjs.com/package/a11y-autocomplete">npm package</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </footer>
+
+    <script type="module">
+      import { createAutocomplete } from "./dist/index.js";
+      import { createDatalistAutocomplete } from "./dist/datalist.js";
+
+      const cities = ["Athens", "Berlin", "Lisbon", "Madrid", "Paris", "Vienna"];
+      const localDemo = document.querySelector("[data-demo-cities]");
+      const strictDemo = document.querySelector("[data-demo-strict]");
+      const datalistDemo = document.querySelector("[data-demo-datalist]");
+
+      if (localDemo instanceof HTMLElement) {
+        createAutocomplete(localDemo, { items: cities });
+      }
+
+      if (strictDemo instanceof HTMLElement) {
+        createAutocomplete(strictDemo, {
+          items: cities,
+          strict: true,
+          highlightFirst: true,
+          clearOnEscape: true
+        });
+      }
+
+      if (datalistDemo instanceof HTMLElement) {
+        createDatalistAutocomplete(datalistDemo, {
+          datalist: "#demo-city-options",
+          minLength: 0,
+          openOnFocus: true
+        });
+      }
+    </script>
+  </body>
+</html>

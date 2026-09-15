@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Form validator integration | A11y Autocomplete</title>
+    <meta name="description" content="Give A11y Form Validator sole ownership of strict autocomplete errors, summary links, and invalid submit focus." />
+    <link rel="stylesheet" href="../dist/styles.css" />
+    <link rel="stylesheet" href="../demo-site.css" />
+    <link rel="stylesheet" href="./example-site.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <header class="demo-header">
+      <div class="demo-page demo-header__inner">
+        <a class="demo-header__brand" href="../index.html"><span class="demo-header__mark" aria-hidden="true">Aa</span><span>A11y Autocomplete</span></a>
+        <nav class="demo-header__nav" aria-label="Example pages">
+          <ul class="demo-header__links">
+            <li><a href="./states.html">States</a></li>
+            <li><a href="./async-data/">Async data</a></li>
+            <li><a href="./match-highlighting.html">Highlighting</a></li>
+            <li><a href="./datalist.html">Datalist</a></li>
+            <li><a class="example-nav-current" aria-current="page" href="./form-validator-integration.html">Form validator</a></li>
+            <li><a href="./tag-input-integration.html">Tag input</a></li>
+            <li><a href="./themes.html">Themes</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="demo-page example-main" id="main-content">
+      <header class="example-intro">
+        <p class="demo-eyebrow">Optional validation addon</p>
+        <h1>One strict rule. One error owner.</h1>
+        <p>A11y Autocomplete keeps the combobox interaction and suggestion status. A11y Form Validator owns strict selection errors, the error summary, and focus after a blocked submit.</p>
+      </header>
+
+      <section class="example-panel form-validator-demo" aria-labelledby="integration-title">
+        <div>
+          <p class="demo-eyebrow">Working integration</p>
+          <h2 id="integration-title">Choose a departure city</h2>
+          <p class="example-note">Try submitting “Unknown”, then choose a suggestion with the keyboard. This example validates on submit and clears the error as soon as you choose a valid option.</p>
+        </div>
+
+        <p class="example-note" data-integration-load-status role="status">Loading the form validator integration.</p>
+
+        <div class="example-workspace">
+          <div class="example-surface">
+            <form id="validator-demo-form" data-a11y-form-validator>
+              <fieldset class="integration-fieldset" data-integration-fields disabled>
+                <legend class="integration-legend">Trip details</legend>
+                <div class="a11y-autocomplete" data-a11y-autocomplete data-validator-autocomplete>
+                  <label class="a11y-autocomplete__label" for="validator-city">Departure city</label>
+                  <p class="a11y-autocomplete__hint" id="validator-city-hint">Type a city, use Arrow keys to review suggestions, then press Enter.</p>
+                  <div class="a11y-autocomplete__control">
+                    <input
+                      class="a11y-autocomplete__input"
+                      id="validator-city"
+                      name="city"
+                      required
+                      aria-describedby="validator-city-hint"
+                      data-autocomplete-input
+                    />
+                    <button class="a11y-autocomplete__clear" type="button" hidden data-autocomplete-clear>Clear</button>
+                    <div class="a11y-autocomplete__popup" hidden data-autocomplete-popup>
+                      <ul class="a11y-autocomplete__list" data-autocomplete-list></ul>
+                    </div>
+                  </div>
+                  <input type="hidden" name="city-id" data-autocomplete-hidden-value />
+                  <div class="a11y-autocomplete__status" data-autocomplete-status></div>
+                </div>
+
+                <div class="example-form-actions">
+                  <button class="example-action example-action--primary" type="submit">Check trip</button>
+                  <button class="example-action" type="button" data-integration-reset>Reset example</button>
+                </div>
+              </fieldset>
+            </form>
+          </div>
+
+          <aside class="state-readout" aria-labelledby="integration-readout-title">
+            <h2 id="integration-readout-title">Validation ownership</h2>
+            <dl>
+              <div><dt>Error and focus owner</dt><dd>A11y Form Validator</dd></div>
+              <div><dt>Form state</dt><dd data-integration-readout="form">idle</dd></div>
+              <div><dt>Strict value</dt><dd data-integration-readout="strict">valid</dd></div>
+              <div><dt>Selected ID</dt><dd data-integration-readout="selected">Not selected</dd></div>
+              <div><dt>Outcome</dt><dd data-integration-readout="outcome">Not submitted</dd></div>
+            </dl>
+          </aside>
+        </div>
+
+        <div class="example-code">
+          <pre tabindex="0"><code>const autocomplete = createAutocomplete(root, {
+  items: cities,
+  strict: true,
+  validationMode: "external"
+});
+
+const preset = createDefaultPreset();
+const validator = createFormValidator(form, {
+  ...preset,
+  validateOn: ["submit"],
+  rules: { city: { autocompleteSelection: true } },
+  addons: [
+    ...preset.addons,
+    createAutocompleteFormValidatorAddon({
+      fields: [{ name: "city", autocomplete }]
+    })
+  ]
+});</code></pre>
+        </div>
+
+        <div class="manual-checks">
+          <h3>Manual announcement and focus check</h3>
+          <ol>
+            <li>Type “Unknown”, submit, and confirm the validator summary is announced and receives focus.</li>
+            <li>Follow the summary link and confirm it focuses the combobox input.</li>
+            <li>Select Athens with Arrow Down and Enter, then confirm the inline error and summary entry clear without a duplicate announcement.</li>
+            <li>Submit again and confirm the hidden city ID is <code>ath</code>.</li>
+          </ol>
+          <p><strong>Deployment note:</strong> local development uses the installed validator package. The published example loads the pinned 1.0.19 module from jsDelivr and sends no form values to it.</p>
+        </div>
+      </section>
+
+      <p class="example-footer"><a href="../index.html">Return to the project overview</a></p>
+    </main>
+
+    <script type="module">
+      import { createAutocomplete } from "../dist/index.js";
+      import { createAutocompleteFormValidatorAddon } from "../dist/addons/form-validator.js";
+
+      const form = document.querySelector("#validator-demo-form");
+      const root = document.querySelector("[data-validator-autocomplete]");
+      const fieldset = document.querySelector("[data-integration-fields]");
+      const loadStatus = document.querySelector("[data-integration-load-status]");
+      const resetButton = document.querySelector("[data-integration-reset]");
+      const outputs = Object.fromEntries(
+        Array.from(document.querySelectorAll("[data-integration-readout]"))
+          .map((output) => [output.dataset.integrationReadout, output])
+      );
+
+      function validatorModuleUrl() {
+        const localHost = location.hostname === "127.0.0.1" || location.hostname === "localhost";
+        return localHost
+          ? "/node_modules/a11y-form-validator/dist/index.js"
+          : "https://cdn.jsdelivr.net/npm/a11y-form-validator@1.0.19/dist/index.js";
+      }
+
+      try {
+        const { createDefaultPreset, createFormValidator } = await import(validatorModuleUrl());
+        if (!(form instanceof HTMLFormElement) || !(root instanceof HTMLElement) ||
+          !(fieldset instanceof HTMLFieldSetElement) || !(resetButton instanceof HTMLButtonElement)) {
+          throw new Error("The form validator example markup is incomplete.");
+        }
+
+        const cities = [
+          { label: "Athens", value: "ath" },
+          { label: "Berlin", value: "ber" },
+          { label: "Lisbon", value: "lis" },
+          { label: "Madrid", value: "mad" },
+          { label: "Paris", value: "par" },
+          { label: "Vienna", value: "vie" }
+        ];
+        const autocomplete = createAutocomplete(root, {
+          items: cities,
+          strict: true,
+          validationMode: "external",
+          clearOnEscape: true
+        });
+        const addon = createAutocompleteFormValidatorAddon({
+          fields: [{
+            name: "city",
+            autocomplete,
+            message: "Choose a departure city from the suggestions."
+          }]
+        });
+        const preset = createDefaultPreset();
+        const presetAddons = Array.isArray(preset.addons) ? preset.addons : preset.addons ? [preset.addons] : [];
+        fieldset.disabled = false;
+        form.addEventListener("submit", (event) => event.preventDefault());
+        const validator = createFormValidator(form, {
+          ...preset,
+          validateOn: ["submit"],
+          rules: { city: { autocompleteSelection: true } },
+          addons: [...presetAddons, addon]
+        });
+
+        function updateReadout(outcome) {
+          outputs.form.textContent = validator.getState().form;
+          outputs.strict.textContent = autocomplete.checkValidity() ? "valid" : "invalid";
+          outputs.selected.textContent = autocomplete.getSelectedItem()?.value || "Not selected";
+          if (outcome) outputs.outcome.textContent = outcome;
+        }
+
+        form.addEventListener("a11y-form-validator:form-invalid", () => updateReadout("Submission blocked"));
+        form.addEventListener("a11y-form-validator:form-valid", () => updateReadout("Ready to submit"));
+        form.addEventListener("a11y-form-validator:field-valid", () => updateReadout());
+        form.addEventListener("a11y-form-validator:field-invalid", () => updateReadout());
+        root.addEventListener("a11y-autocomplete:input", () => queueMicrotask(() => updateReadout()));
+        root.addEventListener("a11y-autocomplete:select", () => queueMicrotask(() => updateReadout()));
+        root.addEventListener("a11y-autocomplete:clear", () => queueMicrotask(() => updateReadout()));
+        resetButton.addEventListener("click", () => {
+          validator.reset();
+          window.setTimeout(() => updateReadout("Not submitted"));
+        });
+
+        if (loadStatus instanceof HTMLElement) loadStatus.textContent = "Integration ready. Validation waits for submit.";
+        updateReadout();
+        window.formValidatorDemo = { autocomplete, validator };
+      } catch (error) {
+        if (loadStatus instanceof HTMLElement) {
+          loadStatus.setAttribute("role", "alert");
+          loadStatus.textContent = "The validator integration could not load. Check the console and try again.";
+        }
+        console.error(error);
+      }
+    </script>
+  </body>
+</html>
